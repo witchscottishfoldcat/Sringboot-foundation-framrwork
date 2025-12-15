@@ -21,6 +21,7 @@
 - Lombok
 - Hutool
 - SpringDoc OpenAPI (Swagger)
+- SLF4J + Logback (日志框架)
 
 ## 系统架构
 
