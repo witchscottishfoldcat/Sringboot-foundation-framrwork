@@ -1,5 +1,5 @@
 autoDetectedPackages:
-- com.example.System
+- com.example.system
 enableAutoDetect: true
 entryDisplayConfig:
   excludedPathPatterns: []

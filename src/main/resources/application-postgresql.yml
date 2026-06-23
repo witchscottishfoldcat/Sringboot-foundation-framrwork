@@ -1,28 +1,24 @@
-# PostgreSQL数据库配置
+# PostgreSQL 数据库配置
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/fgscs?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8
+    url: jdbc:postgresql://localhost:5432/fgscs?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
     username: postgres
     password: 123456
-  
-  # JPA/Hibernate PostgreSQL方言配置
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
-    hibernate:
-      ddl-auto: none
-  
-# MyBatis Plus PostgreSQL特定配置
+
+  # 持久层统一为 MyBatis-Plus，不再使用 JPA/Hibernate（移除死配置）
+
+# MyBatis-Plus PostgreSQL 专用配置
 mybatis-plus:
   global-config:
     db-config:
       logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0
-      # PostgreSQL字段名配置
       table-underline: true
       capital-mode: false
   configuration:
-    # 开启自动映射下划线到驼峰命名
     map-underscore-to-camel-case: true
+    # SQL 日志：默认关闭（NoLoggingImpl）。dev 环境如需查看 SQL，
+    # 请改 org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl

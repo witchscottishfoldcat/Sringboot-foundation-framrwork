@@ -22,8 +22,8 @@
 
 ## 功能特性
 
-1. **JWT令牌认证**: 基于JWT的无状态认证
-2. **基于注解的权限控制**: 使用`@RequirePermission`注解进行方法级权限控制
+1. **JWT 双令牌认证**: 基于 Spring Security + jjwt 的无状态认证（access + refresh + 黑名单吊销）
+2. **基于注解的权限控制**: 使用 Spring Security 的 `@PreAuthorize` 进行方法级权限控制
 3. **角色和权限管理**: 提供完整的角色和权限管理接口
 4. **用户角色分配**: 支持为用户分配和取消角色
 
@@ -39,35 +39,35 @@
 
 ### 2. 使用权限注解
 
-在Controller方法上使用`@RequirePermission`注解进行权限控制：
+在Controller方法上使用 `@PreAuthorize` 进行权限控制（角色自动加 `ROLE_` 前缀）：
 
 ```java
 // 检查角色
-@RequirePermission(roles = {"admin"})
+@PreAuthorize("hasRole('admin')")
 public Result<String> adminEndpoint() {
     // 只有admin角色可以访问
 }
 
 // 检查权限
-@RequirePermission(value = {"user:view"})
+@PreAuthorize("hasAuthority('user:view')")
 public Result<String> userViewEndpoint() {
     // 只有拥有user:view权限的用户可以访问
 }
 
 // 检查多个权限(满足任一个即可)
-@RequirePermission(value = {"user:view", "role:view"}, logical = RequirePermission.Logical.ANY)
+@PreAuthorize("hasAuthority('user:view') or hasAuthority('role:view')")
 public Result<String> anyPermissionEndpoint() {
     // 拥有user:view或role:view权限即可访问
 }
 
 // 检查多个权限(必须满足所有)
-@RequirePermission(value = {"user:view", "role:view"}, logical = RequirePermission.Logical.ALL)
+@PreAuthorize("hasAuthority('user:view') and hasAuthority('role:view')")
 public Result<String> allPermissionsEndpoint() {
     // 必须同时拥有user:view和role:view权限才能访问
 }
 
 // 同时检查角色和权限
-@RequirePermission(roles = {"admin"}, value = {"user:manage"})
+@PreAuthorize("hasRole('admin') and hasAuthority('user:manage')")
 public Result<String> complexEndpoint() {
     // 必须是admin角色且拥有user:manage权限才能访问
 }
@@ -75,17 +75,20 @@ public Result<String> complexEndpoint() {
 
 ### 3. API请求
 
-登录后，在请求头中携带JWT令牌：
+登录后，在请求头中携带 access token：
 
 ```
-Authorization: Bearer <token>
+Authorization: Bearer <accessToken>
 ```
 
 ### 4. API接口
 
 #### 认证接口
-- `POST /auth/login`: 用户登录
+- `POST /auth/login`: 用户登录（返回 access + refresh 双令牌）
 - `POST /auth/register`: 用户注册
+- `POST /auth/refresh`: 刷新令牌（refresh 轮换）
+- `POST /auth/logout`: 登出（吊销令牌）
+- `GET /auth/permissions`: 获取当前登录用户权限列表
 - `GET /auth/info`: 获取用户信息
 
 #### 角色管理接口

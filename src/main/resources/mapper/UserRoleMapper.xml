@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.System.mapper.UserRoleMapper">
+<mapper namespace="com.example.system.mapper.UserRoleMapper">
     
     <select id="getRoleIdsByUserId" resultType="java.lang.Long">
         SELECT role_id FROM user_role WHERE user_id = #{userId} AND deleted = 0
