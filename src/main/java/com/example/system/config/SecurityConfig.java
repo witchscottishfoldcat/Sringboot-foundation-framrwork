@@ -69,16 +69,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
     /**
      * CORS 配置：使用可配置的 origin 白名单（{@link CorsProperties}）。
      * 生产环境务必配置明确的 origin，避免使用通配 *。

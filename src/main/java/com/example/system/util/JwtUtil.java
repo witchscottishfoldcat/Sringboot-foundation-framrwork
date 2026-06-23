@@ -48,12 +48,16 @@ public class JwtUtil {
                 ? new byte[0]
                 : properties.getSecret().getBytes(StandardCharsets.UTF_8);
         if (keyBytes.length < JwtProperties.MIN_SECRET_BYTES) {
-            // 这里仅记录，真正的"拒绝启动"由 SecretValidationInitializer 根据策略决定；
-            // 这样可以避免在测试或构造阶段直接抛异常导致上下文无法装配。
-            log.warn("JWT 密钥长度不足 {} 字节（当前 {} 字节），HS512 签名将无法进行。",
+            // 弱/空密钥：生成运行时随机密钥让 bean 能装配，真正的"拒绝启动"门由
+            // SecretValidationInitializer（EnvironmentPostProcessor，早于 bean 创建）负责。
+            // 这里仅 WARN，避免 @PostConstruct 抛异常导致上下文无法初始化。
+            log.warn("JWT 密钥长度不足 {} 字节（当前 {} 字节），已生成运行时随机密钥临时兜底。"
+                            + " 生产环境必须配置 JWT_SECRET，否则启动校验会拒绝。",
                     JwtProperties.MIN_SECRET_BYTES, keyBytes.length);
+            this.signingKey = Jwts.SIG.HS512.key().build();
+        } else {
+            this.signingKey = Keys.hmacShaKeyFor(keyBytes);
         }
-        this.signingKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
     /**

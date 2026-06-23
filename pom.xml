@@ -51,10 +51,10 @@
             <version>5.8.22</version>
         </dependency>
         
-        <!-- MyBatis-Plus -->
+        <!-- MyBatis-Plus（Spring Boot 3.x 专用 starter，绑定 mybatis-spring 3.x） -->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
             <version>3.5.7</version>
         </dependency>
 
